@@ -207,12 +207,12 @@ const Tooltip: React.FC<TooltipProps> = ({ text, children }) => (
 const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, message, onConfirm, onCancel }) => {
   if (!isOpen) return null;
 
-  
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm bg-opacity-50">
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-sm w-full shadow-2xl">
         <div className='flex justify-center mb-4 gap-4'>
-          <svg className='size-10 text-amber-600' viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <svg className='size-10 text-amber-600' viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
             <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
               <g id="add" fill="currentColor" transform="translate(32.000000, 42.666667)">
                 <path d="M246.312928,5.62892705 C252.927596,9.40873724 258.409564,14.8907053 262.189374,21.5053731 L444.667042,340.84129 C456.358134,361.300701 449.250007,387.363834 428.790595,399.054926 C422.34376,402.738832 415.04715,404.676552 407.622001,404.676552 L42.6666667,404.676552 C19.1025173,404.676552 7.10542736e-15,385.574034 7.10542736e-15,362.009885 C7.10542736e-15,354.584736 1.93772021,347.288125 5.62162594,340.84129 L188.099293,21.5053731 C199.790385,1.04596203 225.853517,-6.06216498 246.312928,5.62892705 Z M224,272 C208.761905,272 197.333333,283.264 197.333333,298.282667 C197.333333,313.984 208.415584,325.248 224,325.248 C239.238095,325.248 250.666667,313.984 250.666667,298.624 C250.666667,283.264 239.238095,272 224,272 Z M245.333333,106.666667 L202.666667,106.666667 L202.666667,234.666667 L245.333333,234.666667 L245.333333,106.666667 Z" id="Combined-Shape">
@@ -262,7 +262,7 @@ const SummaryWidget: React.FC<SummaryWidgetProps> = ({ transactions }) => {
       <div className='p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 rounded-xl space-y-4 border border-green-200 dark:border-green-800'>
         <div className='flex justify-between'>
           <p className="text-sm text-gray-500 dark:text-white">Total Credit</p>
-          <svg className='size-8 text-green-600' viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" enable-background="new 0 0 76.00 76.00" xml:space="preserve">
+          <svg className='size-8 text-green-600' viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" enable-background="new 0 0 76.00 76.00" xmlSpace="preserve">
             <path fill="currentColor" fill-opacity="1" stroke-width="0.1" stroke-linejoin="round" d="M 15.8332,47.5002L 15.8332,40.1901L 25.3332,31.6669L 30.0832,36.4169L 34.8331,20.5836L 44.3331,31.6669L 50.6664,25.3336L 45.9164,20.5836L 58.583,20.5836L 58.583,33.2502L 53.8331,28.5003L 44.3331,38.0002L 36.4165,28.5003L 31.6665,44.3335L 25.3332,38.0002L 15.8332,47.5002 Z " />
             <path fill="currentColor" fill-opacity="1" stroke-width="0.1" stroke-linejoin="round" d="M 58.5833,55.4167L 53.8333,55.4167L 53.8333,34.8333L 58.5833,39.5833L 58.5833,55.4167 Z M 49.0833,55.4167L 44.3333,55.4167L 44.3333,44.3333L 49.0833,39.5834L 49.0833,55.4167 Z M 39.5833,55.4167L 34.8333,55.4167L 34.8333,45.9167L 37.2083,36.4167L 39.5833,39.5833L 39.5833,55.4167 Z M 30.0833,55.4167L 25.3333,55.4167L 25.3333,44.3333L 30.0833,49.0833L 30.0833,55.4167 Z M 20.5833,55.4167L 15.8333,55.4167L 15.8333,53.8334L 20.5833,49.0834L 20.5833,55.4167 Z " />
           </svg>
@@ -275,7 +275,7 @@ const SummaryWidget: React.FC<SummaryWidgetProps> = ({ transactions }) => {
       <div className='p-4 bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950 dark:to-red-900 rounded-xl space-y-4 border border-red-200 dark:border-red-800'>
         <div className='flex justify-between'>
           <p className="text-sm text-gray-500 dark:text-white">Total Debit</p>
-          <svg className='size-8 text-red-600' viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" enable-background="new 0 0 76.00 76.00" xml:space="preserve">
+          <svg className='size-8 text-red-600' viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" enable-background="new 0 0 76.00 76.00" xmlSpace="preserve">
             <path fill="currentColor" fill-opacity="1" stroke-width="0.2" stroke-linejoin="round" d="M 58.5833,55.4167L 53.8333,55.4167L 53.8333,50.6667L 58.5833,50.6667L 58.5833,55.4167 Z M 49.0833,55.4167L 44.3333,55.4167L 44.3333,49.0833L 49.0833,50.6667L 49.0833,55.4167 Z M 39.5833,55.4167L 34.8333,55.4167L 34.8333,52.25L 39.5833,47.5L 39.5833,55.4167 Z M 30.0833,55.4167L 25.3333,55.4167L 25.3333,41.1667L 28.5,38L 30.0833,45.9167L 30.0833,55.4167 Z M 20.5833,55.4167L 15.8333,55.4167L 15.8333,33.25L 20.5833,38L 20.5833,55.4167 Z " />
             <path fill="currentColor" fill-opacity="1" stroke-width="0.2" stroke-linejoin="round" d="M 15.8332,20.5831L 15.8332,27.8932L 25.3332,36.4164L 30.0832,31.6664L 34.8332,47.4997L 44.3331,36.4164L 50.6664,42.7497L 45.9164,47.4997L 58.583,47.4997L 58.583,34.8331L 53.8331,39.5831L 44.3331,30.0831L 36.4165,39.5831L 31.6665,23.7498L 25.3332,30.0831L 15.8332,20.5831 Z " />
           </svg>
@@ -288,8 +288,8 @@ const SummaryWidget: React.FC<SummaryWidgetProps> = ({ transactions }) => {
       <div className='p-4 bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-950 dark:to-indigo-900 rounded-xl space-y-4 border border-indigo-200 dark:border-indigo-800'>
         <div className='flex justify-between'>
           <p className="text-sm text-gray-500 dark:text-white">Total Amount</p>
-          <svg fill="currentColor" className='size-8 text-indigo-600' version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 512 512" xml:space="preserve">
+          <svg fill="currentColor" className='size-8 text-indigo-600' version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 512 512" xmlSpace="preserve">
             <g>
               <g>
                 <path d="M475.479,239.304H461.99c-4.674-8.934-10.282-17.51-16.771-25.641v-91.228c0-9.217-7.479-16.696-16.696-16.696
