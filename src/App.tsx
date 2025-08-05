@@ -1129,15 +1129,16 @@ export default function App() {
   };
 
   const handleExportPDF = async () => {
-    const loadScript = (src) => new Promise((resolve, reject) => {
+    const loadScript = (src: string): Promise<void> => new Promise((resolve, reject) => {
       const existingScript = document.querySelector(`script[src="${src}"]`);
       if (existingScript) {
         return resolve();
       }
+
       const script = document.createElement('script');
       script.src = src;
       script.async = true;
-      script.onload = resolve;
+      script.onload = () => resolve(); // ✅ fix here
       script.onerror = () => reject(new Error(`Script load error for ${src}`));
       document.head.appendChild(script);
     });
@@ -1146,7 +1147,7 @@ export default function App() {
       await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
       await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js');
 
-      const { jsPDF } = window.jspdf;
+      const { jsPDF } = (window as any).jspdf;
       const doc = new jsPDF();
 
       // Title
@@ -1189,7 +1190,7 @@ export default function App() {
           5: { cellWidth: 30 }, // User
           6: { cellWidth: 40 }, // Remarks
         },
-        didDrawPage: function (data) {
+        didDrawPage: function (data:any) {
           const pageCount = doc.internal.getNumberOfPages();
           doc.setFontSize(9);
           doc.setTextColor(150);
