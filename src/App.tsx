@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
-import { Sun, Moon, Upload, Download, Search, X, LogIn, LogOut, Eye, EyeOff } from 'lucide-react';
+import { Sun, Moon, Upload, Download, Search, X, LogIn, LogOut, Eye, EyeOff, FileText } from 'lucide-react';
 import Papa from 'papaparse';
 
 export type TransactionType = 'credit' | 'debit';
@@ -63,7 +63,7 @@ export interface FilterControlsProps {
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
   counterpartys: string[];
   onExportCSV: () => void;
-  // onExportPDF: () => void;
+  onExportPDF: () => void;
   onImportCSV: (file: File) => void;
 }
 
@@ -510,7 +510,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
   filters,
   setFilters,
   onExportCSV,
-  // onExportPDF,
+  onExportPDF,
   onImportCSV,
 }) => {
   const importInputRef = useRef<HTMLInputElement>(null);
@@ -548,9 +548,9 @@ const FilterControls: React.FC<FilterControlsProps> = ({
           <button onClick={onExportCSV} className="bg-transparent hover:bg-green-500/30 rounded-lg flex items-center px-2 py-1">
             <Download className="h-4 w-4 text-green-500" /> <span className='pl-2 text-green-500 hidden md:inline'>Export CSV</span>
           </button>
-          {/* <button onClick={onExportPDF} className="action-button bg-red-500 hover:bg-red-600">
-          <FileText className="h-4 w-4 mr-2" /> Export PDF
-        </button> */}
+          <button onClick={onExportPDF} className="bg-transparent hover:bg-slate-500/20 rounded-lg flex items-center px-2 py-1">
+            <FileText className="h-4 w-4 text-slate-500 dark:text-slate-200" /> <span className='pl-2 text-slate-500 dark:text-slate-200 hidden md:inline'>Export PDF</span>
+          </button>
         </div>
       </div>
 
@@ -928,20 +928,30 @@ export default function App() {
     checkPassword();
   }, []);
 
-  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
-
+  // Load saved theme on mount
   useEffect(() => {
-    if (isDarkMode) {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      setIsDarkMode(true);
       document.documentElement.classList.add('dark');
     } else {
+      setIsDarkMode(false);
       document.documentElement.classList.remove('dark');
     }
-  }, [isDarkMode]);
-
-  useEffect(() => {
-    const savedMode = localStorage.getItem('darkMode');
-    setIsDarkMode(savedMode === 'true');
   }, []);
+
+  // Toggle handler
+  const toggleDarkMode = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    if (newTheme) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
 
   const fetchData = async () => {
     if (!isAuthenticated) return;
@@ -1118,50 +1128,80 @@ export default function App() {
     reader.readAsText(file);
   };
 
-  // const handleExportPDF = async () => {
-  //   const loadScript = (src) => new Promise((resolve, reject) => {
-  //     const existingScript = document.querySelector(`script[src="${src}"]`);
-  //     if (existingScript) {
-  //       return resolve();
-  //     }
-  //     const script = document.createElement('script');
-  //     script.src = src;
-  //     script.async = true;
-  //     script.onload = resolve;
-  //     script.onerror = () => reject(new Error(`Script load error for ${src}`));
-  //     document.head.appendChild(script);
-  //   });
+  const handleExportPDF = async () => {
+    const loadScript = (src) => new Promise((resolve, reject) => {
+      const existingScript = document.querySelector(`script[src="${src}"]`);
+      if (existingScript) {
+        return resolve();
+      }
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error(`Script load error for ${src}`));
+      document.head.appendChild(script);
+    });
 
-  //   try {
-  //     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-  //     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js');
+    try {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js');
 
-  //     const { jsPDF } = window.jspdf;
-  //     const doc = new jsPDF();
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-  //     doc.text("Transaction Report", 14, 16);
+      // Title
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.text("Transaction Report", 14, 16);
 
-  //     doc.autoTable({
-  //       startY: 20,
-  //       head: [['Date', 'Type', 'User', 'Remarks', 'Amount']],
-  //       body: transactions.map(tx => [
-  //         formatDate(tx.date),
-  //         tx.type,
-  //         tx.user,
-  //         tx.remarks,
-  //         { content: formatCurrency(tx.amount), styles: { halign: 'right', textColor: tx.type === 'credit' ? [40, 167, 69] : [220, 53, 69] } }
-  //       ]),
-  //       didDrawPage: function (data) {
-  //         let str = "Page " + doc.internal.getNumberOfPages();
-  //         doc.setFontSize(10);
-  //         doc.text(str, data.settings.margin.left, doc.internal.pageSize.height - 10);
-  //       },
-  //     });
-  //     doc.save(`transactions_${formatDate(new Date())}.pdf`);
-  //   } catch (error) {
-  //     console.error("Error generating PDF:", error);
-  //   }
-  // };
+      // Subtitle
+      doc.setFontSize(10);
+      doc.setTextColor(102, 51, 153); // Indigo-like color
+      doc.text("by Transaction Flow", 14, 23);
+
+      // Table
+      doc.autoTable({
+        startY: 30,
+        head: [['Date', 'Time', 'Payment Mode', 'Type', 'Ref ID', 'User', 'Remarks', 'Amount']],
+        body: transactions.map(tx => [
+          formatDate(tx.date),
+          tx.time,
+          tx.paymentMode,
+          tx.type,
+          { content: tx.refId || '-', styles: { halign: 'center' } },
+          { content: tx.counterparty, styles: { halign: 'left' } },
+          { content: tx.remarks, styles: { halign: 'left' } },
+          {
+            content: formatCurrency(tx.amount).replace('₹', ''),
+            styles: {
+              halign: 'right',
+              textColor: tx.type === 'credit' ? [40, 167, 69] : [220, 53, 69]
+            }
+          }
+        ]),
+        styles: {
+          fontSize: 8,
+          cellWidth: 'wrap',
+        },
+        columnStyles: {
+          7: { cellWidth: 25 }, // Amount column fixed width
+          4: { cellWidth: 20 }, // Ref ID
+          5: { cellWidth: 30 }, // User
+          6: { cellWidth: 40 }, // Remarks
+        },
+        didDrawPage: function (data) {
+          const pageCount = doc.internal.getNumberOfPages();
+          doc.setFontSize(9);
+          doc.setTextColor(150);
+          doc.text(`Page ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 10);
+        },
+      });
+
+      doc.save(`transactions_${formatDate(new Date())}.pdf`);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
 
   if (!isAuthenticated) {
     return <LoginScreen onLogin={handleLogin} onSetPassword={handleSetPassword} hasPassword={hasPassword} />;
@@ -1174,9 +1214,16 @@ export default function App() {
           <div className="flex justify-between items-center py-4">
             <h1 className="text-lg sm:text-2xl font-bold text-indigo-600 dark:text-indigo-400">Transaction Flow</h1>
             <div className="flex items-center space-x-2">
-              <Tooltip text={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}>
-                <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                  {isDarkMode ? <Sun className="size-5 text-yellow-400" /> : <Moon className="h-6 w-6 text-gray-700" />}
+              <Tooltip text={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
+                <button
+                  onClick={toggleDarkMode}
+                  className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                >
+                  {isDarkMode ? (
+                    <Sun className="size-5 text-yellow-400" />
+                  ) : (
+                    <Moon className="h-6 w-6 text-gray-700" />
+                  )}
                 </button>
               </Tooltip>
               <Tooltip text="Logout">
@@ -1211,15 +1258,15 @@ export default function App() {
             <div
               onClick={() => setActiveTab('add')}
               className={`cursor-pointer flex items-center gap-1 px-4 p-2 rounded-full transition-colors
-      ${activeTab === 'add'
+              ${activeTab === 'add'
                   ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
                   : 'hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white'}
-    `}
+              `}
             >
               <svg className='size-6' viewBox="0 0 24 24" fill="none">
                 <path d="M6 12H12M12 12H18M12 12V18M12 12V6" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              <p className='text-sm'>Add</p>
+              <p className='text-sm'>Add New</p>
             </div>
           </div>
         </div>
@@ -1233,6 +1280,7 @@ export default function App() {
               counterpartys={uniqueUsers}
               onExportCSV={handleExportCSV}
               onImportCSV={handleImportCSV}
+              onExportPDF={handleExportPDF}
             />
             <TransactionList
               transactions={transactions}
@@ -1247,22 +1295,6 @@ export default function App() {
         )}
 
       </main>
-
-      {/* <style jsx global>{`
-        .input-style {
-            @apply w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all duration-300;
-        }
-        .action-button {
-            @apply flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200 transform hover:scale-105;
-        }
-        @keyframes fade-in {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fade-in 0.5s ease-out forwards;
-        }
-      `}</style> */}
     </div>
   );
 }
